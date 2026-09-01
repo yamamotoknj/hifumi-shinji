@@ -8,7 +8,8 @@ Get-ChildItem -LiteralPath $contentRoot -Recurse -File -Filter '*.md' | ForEach-
     $text = [System.IO.File]::ReadAllText($path, [System.Text.Encoding]::UTF8)
     $updated = [regex]::Replace($text, '\[\[([^\]]+?)\|([^\]]+?)\]\]', {
         param($match)
-        '[[' + $match.Groups[1].Value + '\|' + $match.Groups[2].Value + ']]'
+        $target = $match.Groups[1].Value.TrimEnd('\')
+        '[[' + $target + '\|' + $match.Groups[2].Value + ']]'
     })
     if ($updated -notmatch '(?m)^title:' -and $updated -match '\A---\r?\nタイトル:\s*([^\r\n]+)') {
         $title = $Matches[1]
